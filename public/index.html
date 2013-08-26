@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <title>websocket-test</title>
+    
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css" media="screen">
+      body {
+        padding-top: 20px;
+      }
+    </style>
+  
+  </head>
+  <body>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-2">
+       <h1 id="header"></h1> 
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-md-offset-1 col-lg-2">
+        <input type="text" class="form-control" id="userName" placeholder="user name">
+      </div>
+      <div class="col-md-6 col-md-offset-1">
+        <textarea class="form-control" rows="10" id="chatArea" disabled></textarea>
+        <br>
+         <textarea class="form-control" rows="3" id="chat"></textarea>
+      </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="https://rawgithub.com/timrwood/moment/2.1.0/min/moment.min.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    var socket = io.connect('http://localhost');
+
+    socket.on('start', function start (data) {
+      $('#header').html(data.msg);
+    });
+
+    
+
+
+    $('#chat').bind('keypress', function(e) {
+      var code = e.keyCode || e.which;
+      if (code === 13) {
+        var chatText = $('#chat').val();
+        chatText = chatText.replace('\n', '');
+        $('#chat').val('');
+
+        var newEntry = [$('#userName').val(), ' [', moment().format('HH:mm:ss'), '] : ', chatText, '\n'].join('');
+        $('#chatArea').append(newEntry)
+        // clear
+        //$('#chat').val('');
+
+      }
+    });
+
+    </script>
+  </body>
+</html>

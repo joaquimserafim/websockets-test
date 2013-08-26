@@ -1,0 +1,28 @@
+{
+  "name": "websockets-test",
+  "version": "0.0.0-1",
+  "description": "simples socket.io example",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joaquimserafim/websockets-test"
+  },
+  "keywords": [
+    "webscokets",
+    "socket.io",
+    "hapi",
+    "nodejs"
+  ],
+  "author": "Joaquim Serafim",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/joaquimserafim/websockets-test/issues"
+  },
+  "dependencies": {
+    "hapi": "~1.9.4",
+    "socket.io": "~0.9.16"
+  }
+}
