@@ -26,38 +26,73 @@
       <div class="col-md-6 col-md-offset-1">
         <textarea class="form-control" rows="10" id="chatArea" disabled></textarea>
         <br>
-         <textarea class="form-control" rows="3" id="chat"></textarea>
+         <textarea class="form-control" rows="3" id="chat" disabled></textarea>
       </div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="https://rawgithub.com/timrwood/moment/2.1.0/min/moment.min.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="https://rawgithub.com/timrwood/moment/2.1.0/min/moment.min.js"></script>
+    <script src="http://underscorejs.org/underscore-min.js"></script>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
+    /**
+     * SOCKET.IO
+     */
     var socket = io.connect('http://localhost');
 
     socket.on('start', function start (data) {
       $('#header').html(data.msg);
     });
 
-    
+    socket.on('newMsg', function newMsg(data) {
+      var user = $('#userName').val();
+      
+      if(data.user !== user) {
+        // simples way
+        var msg = data.msg.replace('me', data.user);
+        $('#chatArea').append(msg);
+      }
+    });
 
+    /**
+     * DOM
+     */
+    $('#userName').bind('keypress', function(e) {
+      $('#chat').prop("disabled", false);
+    });
 
     $('#chat').bind('keypress', function(e) {
+      var user = $('#userName').val();
+
+      if (!user) {
+        alert('must have a user name');
+        return;
+      }
+
       var code = e.keyCode || e.which;
       if (code === 13) {
         var chatText = $('#chat').val();
         chatText = chatText.replace('\n', '');
+        // clear
         $('#chat').val('');
 
-        var newEntry = [$('#userName').val(), ' [', moment().format('HH:mm:ss'), '] : ', chatText, '\n'].join('');
-        $('#chatArea').append(newEntry)
-        // clear
-        //$('#chat').val('');
+        var newEntry = [
+          '[',
+          moment().format('HH:mm:ss'), '] me: ',
+          chatText,
+          '\n'
+        ].join('');
 
+        socket.emit('msg', {user: user, msg: newEntry});
+        $('#chatArea').append(newEntry);
+        // scroll box
+        var chatArea = $('#chatArea');
+        chatArea.scrollTop(
+          chatArea[0].scrollHeight - chatArea.height()
+        );
       }
     });
-
     </script>
   </body>
 </html>
